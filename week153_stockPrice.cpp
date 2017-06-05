@@ -46,6 +46,7 @@
 #include <set>
 #include <utility>
 #include <cstdio>
+#include <cstdlib>
 #include <string.h>
 #include <string>
 
@@ -53,9 +54,7 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-    cout << "Hello World!" << endl;
-
-    list<pair<int, set<int>::iterator>> price;
+    list<pair<int, set<int>::iterator> > price;
     multiset<int> prices;
 
     int n=-1;
@@ -70,16 +69,20 @@ int main(int argc, char *argv[])
         getline(cin, strCommand);
         if(strCommand.at(0) == 'P')
         {
-            str = strtok(strCommand.c_str(), " ");
+            str = strtok((char*)strCommand.c_str(), " ");
             nTime = atoi(strtok(NULL, " "));
             nPrice = atoi(strtok(NULL, " \r\n"));
 
-            auto it = prices.insert(nPrice);
-            price.emplace_back(make_pair(nTime, it));
+//            auto it = prices.insert(nPrice); //c++11
+//            price.emplace_back(make_pair(nTime, it)); //c++11
+
+            set<int>::iterator it = prices.insert(nPrice);
+            pair<int, set<int>::iterator> timePrice = make_pair(nTime, it);
+            price.push_back(timePrice);
         }
         else if(strCommand[0] == 'R')
         {
-            str = strtok(strCommand.c_str(), " ");
+            str = strtok((char*)strCommand.c_str(), " ");
             nTime = atoi(strtok(NULL, " \r\n"));
             while(price.size()!=0 && price.begin()->first<=nTime)
             {
