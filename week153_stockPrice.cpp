@@ -62,16 +62,20 @@ int main(int argc, char *argv[])
     cin.get();
 
     string strCommand;
-    char *str;
+    char *str, *saveptr;
     int nTime, nPrice;
     while(n--)
     {
         getline(cin, strCommand);
         if(strCommand.at(0) == 'P')
         {
-            str = strtok((char*)strCommand.c_str(), " ");
-            nTime = atoi(strtok(NULL, " "));
-            nPrice = atoi(strtok(NULL, " \r\n"));
+            // warning:strtok uses a static buffer while parsing, so it's not thread safe.  Use strtok_r() instead
+//            str = strtok((char*)strCommand.c_str(), " ");
+//            nTime = atoi(strtok(NULL, " "));
+//            nPrice = atoi(strtok(NULL, " \r\n"));
+            str = strtok_r((char*)strCommand.c_str(), " ", &saveptr);
+            nTime = atoi(strtok_r(NULL, " ", &saveptr));
+            nPrice = atoi(strtok_r(NULL, " \r\n", &saveptr));
 
 //            auto it = prices.insert(nPrice); //c++11
 //            price.emplace_back(make_pair(nTime, it)); //c++11
@@ -82,8 +86,11 @@ int main(int argc, char *argv[])
         }
         else if(strCommand[0] == 'R')
         {
-            str = strtok((char*)strCommand.c_str(), " ");
-            nTime = atoi(strtok(NULL, " \r\n"));
+//            str = strtok((char*)strCommand.c_str(), " ");
+//            nTime = atoi(strtok(NULL, " \r\n"));
+            str = strtok_r((char*)strCommand.c_str(), " ", &saveptr);
+            nTime = atoi(strtok_r(NULL, " \r\n", &saveptr));
+
             while(price.size()!=0 && price.begin()->first<=nTime)
             {
                 prices.erase(price.begin()->second);
